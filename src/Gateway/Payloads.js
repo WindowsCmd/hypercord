@@ -20,3 +20,14 @@ module.exports.IDENTIFY = (data) => {
     },
   };
 };
+
+module.exports.RESUME = (data) => {
+  return {
+    op: GATEWAY_OP_CODES.RESUME,
+    d: {
+      token: data.token,
+      session_id: data.session_id,
+      seq: data.seq,
+    },
+  };
+};

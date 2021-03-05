@@ -11,6 +11,7 @@ module.exports = class Websocket extends EventEmitter {
     this.client = client;
     this._ws = null;
     this._sessionId = null;
+    this.is_ready = false;
     this._heartbeat = null;
   }
 
@@ -42,6 +43,45 @@ module.exports = class Websocket extends EventEmitter {
 
   handleMessage(data, flags) {
     const message = this.decompressGatewayMessage(data, flags);
+    switch (message.d) {
+      case Constants.GATEWAY_OP_CODES.DISPATCH:
+        this._heartbeat = message.t;
+        break;
+      case Constants.GATEWAY_OP_CODES.HEARTBEAT:
+        this.WSSend(Payloads.HEARTBEAT(this._heartbeat));
+
+      case Constants.GATEWAY_OP_CODES.HELLO:
+        //presense goes here
+
+        let payload;
+        if (this._sessionId !== null && this._heartbeat !== null) {
+          payload = Payloads.RESUME({
+            seq: this._heartbeat,
+            session_id: this._sessionId,
+            token: this.client.token,
+          });
+        } else {
+          payload = Payloads.IDENTIFY({ token: this.client.token });
+        }
+
+        if (this._ws !== null && this._ws.readyState !== this._ws.CLOSED) {
+          this.WSSend(payload);
+        }
+        break;
+    }
+
+    switch (message.t) {
+      case "READY":
+        if (!this.is_ready) {
+          this.emit("ready", message.d.user);
+          this.is_ready = true;
+          this._sessionId = message.d.session_id;
+        }
+        break;
+      case "MESSAGE_CREATE":
+        this.emit("message", message.d);
+        break;
+    }
   }
 
   decompressGatewayMessage(message, flags) {
