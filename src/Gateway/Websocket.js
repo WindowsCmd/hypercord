@@ -1,7 +1,9 @@
 const { EventEmitter } = require("events");
 const ws = require("ws");
 const Constants = require("../Constants");
+const ZlibSync = require("zlib-sync");
 const Payloads = require("./Payloads");
+const { inflateSync } = require("node:zlib");
 
 module.exports = class Websocket extends EventEmitter {
   constructor(client) {
@@ -27,7 +29,7 @@ module.exports = class Websocket extends EventEmitter {
       console.log("Closed");
     });
 
-    this._ws.on("message");
+    this._ws.on("message", this.handleMessage.bind(this));
   }
 
   WSSend(payload) {
@@ -36,5 +38,26 @@ module.exports = class Websocket extends EventEmitter {
     }
 
     this._ws.send(JSON.stringify(payload));
+  }
+
+  handleMessage(data, flags) {
+    const message = this.decompressGatewayMessage(data, flags);
+  }
+
+  decompressGatewayMessage(message, flags) {
+    if (typeof flags !== "object") {
+      flags = {};
+    }
+    if (!flags.binary) {
+      return JSON.parse(message);
+    } else {
+      const inflate = new ZlibSync.Inflate();
+      inflate.push(message, ZlibSync.Z_SYNC_FLUSH);
+
+      if (inflate.err < 0) {
+        throw new Error("Zlib error has occured " + inflate.msg);
+      }
+      return JSON.parse(inflate.toString());
+    }
   }
 };

@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Craftzman7/hypercord#readme",
   "dependencies": {
-    "ws": "^7.4.3"
+    "ws": "^7.4.3",
+    "zlib-sync": "^0.1.7"
   }
 }
