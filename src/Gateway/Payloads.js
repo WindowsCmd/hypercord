@@ -12,6 +12,7 @@ module.exports.IDENTIFY = (data) => {
     op: GATEWAY_OP_CODES.IDENTIFY,
     d: {
       token: data.token || null,
+      intents: 513,
       properties: {
         $os: require("os").platform(),
         $browser: "Hypercord",
@@ -28,6 +29,22 @@ module.exports.RESUME = (data) => {
       token: data.token,
       session_id: data.session_id,
       seq: data.seq,
+    },
+  };
+};
+
+module.exports.PRESENSE = (data) => {
+  return {
+    op: GATEWAY_OP_CODES.PRESENCE_UPDATE,
+    d: {
+      game: {
+        name: data.game.name || null,
+        type: data.game.type || 0,
+        url: data.game.url || null,
+      },
+      status: data.status || "online",
+      since: data.since || Date.now(),
+      afk: !!data.afk,
     },
   };
 };

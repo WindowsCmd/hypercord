@@ -3,7 +3,6 @@ const ws = require("ws");
 const Constants = require("../Constants");
 const ZlibSync = require("zlib-sync");
 const Payloads = require("./Payloads");
-const { inflateSync } = require("node:zlib");
 
 module.exports = class Websocket extends EventEmitter {
   constructor(client) {
@@ -13,6 +12,10 @@ module.exports = class Websocket extends EventEmitter {
     this._sessionId = null;
     this.is_ready = false;
     this._heartbeat = null;
+  }
+
+  login() {
+    this.connect();
   }
 
   connect() {
@@ -26,8 +29,8 @@ module.exports = class Websocket extends EventEmitter {
       }
     });
 
-    this._ws.once("close", () => {
-      console.log("Closed");
+    this._ws.once("close", (m) => {
+      console.log(m);
     });
 
     this._ws.on("message", this.handleMessage.bind(this));
