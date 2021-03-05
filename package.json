@@ -1,0 +1,25 @@
+{
+  "name": "hypercord",
+  "version": "0.0.0",
+  "description": "A simple discord api wrapper written in js",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Craftzman7/hypercord.git"
+  },
+  "author": "Crafterzman7",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Craftzman7/hypercord/issues"
+  },
+  "homepage": "https://github.com/Craftzman7/hypercord#readme",
+  "dependencies": {
+    "ws": "^7.4.3"
+  }
+}
