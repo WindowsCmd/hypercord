@@ -25,7 +25,12 @@ module.exports = class Websocket extends EventEmitter {
 
     this._ws.once("open", () => {
       if (this.ws !== null) {
-        this.WSSend(Payloads.IDENTIFY({ token: this.client.token }));
+        this.WSSend(
+          Payloads.IDENTIFY({
+            token: this.client.token,
+            intents: this.client.intents,
+          })
+        );
       }
     });
 

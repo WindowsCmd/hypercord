@@ -10,4 +10,4 @@ client.on("message", (m) => {
   console.log(m);
 });
 
-client.login("ODE3NDg2MDQ5NDYxNjY1ODA0.YEKNNg.PmgVC8zdN5LmuzvN9fVQlecIKpc");
+client.login("ODE3NDg2MDQ5NDYxNjY1ODA0.YEKNNg.-nHhmiXE2IFYrGs-N7so4a-EvVQ");
