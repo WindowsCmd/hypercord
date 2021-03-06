@@ -9,8 +9,8 @@ module.exports = class Request {
     return new Promise((resolve, reject) => {
       axios({
         method,
-        url: options.data || null,
-        headers: options.headers || {
+        url: endpoint || null,
+        headers: options?.headers || {
           "Content-Type": "application/json",
           Authorization: `Bot ${this.client.token}`,
         },

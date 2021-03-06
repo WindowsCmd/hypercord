@@ -1,6 +1,8 @@
 const Websocket = require("./Gateway/Websocket");
 const Request = require("./Rest/Request");
 const Constants = require("./Constants");
+const GuildManager = require("./Managers/Guild");
+const Endpoints = require("./Rest/endpoints");
 const FormData = require("form-data");
 const { EventEmitter } = require("events");
 
@@ -12,10 +14,13 @@ module.exports = class Client extends EventEmitter {
   constructor(options = {}) {
     super();
     this.token = null;
+    this.user = null;
     this.ws = new Websocket(this);
     this.rest = new Request(this);
+    this._guilds = new Map();
     this.intents = this.calcIntents(options.intents);
     this.ws.on("ready", (u) => {
+      this.user = u;
       this.emit("ready", this);
     });
     this.ws.on("message", (m) => this.emit("message", m));
@@ -33,15 +38,26 @@ module.exports = class Client extends EventEmitter {
     return final;
   }
 
-  send(channelId, data) {
+  /**
+   * Fetches guilds
+   * @returns Map of guild objects
+   */
+  guilds() {
     return new Promise((resolve, reject) => {
-      if (!this.token) {
-        reject(new Error("No Login details Provided!"));
-      }
-      if (!channelId) {
-        reject(new Error("No channel ID provided when sending message."));
-      }
-      const form = new FormData();
+      if (!this.user)
+        throw new Error(
+          "You must login to the gateway before fetching things!"
+        );
+      this.rest
+        .make({
+          endpoint: `${Endpoints.BASE}${Endpoints.GUILDS}`,
+          method: "GET",
+        })
+        .then((res) => {
+          res.forEach((guild) => {
+            this._guilds.set(guild.id, new GuildManager(guild));
+          });
+        });
     });
   }
 
