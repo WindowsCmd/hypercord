@@ -2,9 +2,13 @@ const { Client } = require("../src/index");
 let config = require("./config.json");
 let client = new Client();
 
-client.on("ready", () => {
+client.on("ready", async () => {
   console.log("ready!");
-  client.guilds();
+  console.log(
+    client.guilds
+      .get("816845916576415805")
+      .iconURL({ format: "png", size: "512" })
+  );
 });
 
 client.on("message", (m) => {
