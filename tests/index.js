@@ -9,6 +9,15 @@ client.on("ready", async () => {
       .get("816845916576415805")
       .iconURL({ format: "png", size: "512" })
   );
+
+  client.setPresence({
+    status: "dnd",
+    game: {
+      name: "owo whats this?",
+      type: 0,
+    },
+    client_status: "mobile",
+  });
 });
 
 client.on("message", (m) => {
