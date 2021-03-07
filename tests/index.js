@@ -11,10 +11,10 @@ client.on("ready", async () => {
   );
 
   client.setPresence({
-    status: "dnd",
+    status: "online",
     game: {
-      name: "owo whats this?",
-      type: 0,
+      name: "VERY NIAS",
+      type: "LISTENING",
     },
     client_status: "mobile",
   });
