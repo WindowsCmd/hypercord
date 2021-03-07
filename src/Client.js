@@ -20,11 +20,7 @@ module.exports = class Client extends EventEmitter {
     this.ws = new Websocket(this);
     this.rest = new Request(this);
     this.guilds = new Map();
-    this.presense = {
-      status: "online",
-      activities: null,
-      client_status: "desktop",
-    };
+    this.presense = null;
     this.intents = this.calcIntents(options.intents);
     this.ws.on("ready", async (u) => {
       this.user = u;
@@ -79,8 +75,6 @@ module.exports = class Client extends EventEmitter {
       game: game || null,
       client_status: client_status || this.presense.client_status,
     };
-
-    this.ws.WSSend(Payloads.PRESENSE(this.presense));
 
     return this;
   }

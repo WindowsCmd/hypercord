@@ -34,13 +34,16 @@ module.exports = class Websocket extends EventEmitter {
       }
     });
 
-    this._ws.once("close", () => this.handleClose.bind(this));
-
+    this._ws.once("close", this.handleClose.bind(this));
+    this._ws.on("error", (m) => {
+      console.log(m);
+    });
     this._ws.on("message", this.handleMessage.bind(this));
   }
 
   handleClose(code, data) {
     if (this._ws !== null) {
+      this.emit("reconnect", this.client);
       this.connect();
     }
   }
@@ -55,29 +58,39 @@ module.exports = class Websocket extends EventEmitter {
 
   handleMessage(data, flags) {
     const message = this.decompressGatewayMessage(data, flags);
-    switch (message.d) {
+    switch (message.op) {
       case Constants.GATEWAY_OP_CODES.DISPATCH:
         this._heartbeat = message.t;
         break;
       case Constants.GATEWAY_OP_CODES.HEARTBEAT:
         this.WSSend(Payloads.HEARTBEAT(this._heartbeat));
+        break;
 
       case Constants.GATEWAY_OP_CODES.HELLO:
-        //presense goes here
-
-        let payload;
-        if (this._sessionId !== null && this._heartbeat !== null) {
-          payload = Payloads.RESUME({
-            seq: this._heartbeat,
-            session_id: this._sessionId,
-            token: this.client.token,
-          });
-        } else {
-          payload = Payloads.IDENTIFY({ token: this.client.token });
+        if (this.client.presense !== null) {
+          this.WSSend(Payloads.PRESENSE(this.client.presense));
         }
 
-        if (this._ws !== null && this._ws.readyState !== this._ws.CLOSED) {
-          this.WSSend(payload);
+        this._heartbeat = message.d.heartbeat_interval;
+        break;
+
+      case Constants.GATEWAY_OP_CODES.INVALID_SESSION:
+        if (this._sessionId !== null && this._heartbeat !== null) {
+          this.WSSend(
+            Payloads.RESUME({
+              seq: this._heartbeat,
+              session_id: this._sessionId,
+              token: this.client.token,
+            })
+          );
+        } else {
+          this.WSSend(Payloads.IDENTIFY({ token: this.client.token }));
+        }
+        break;
+
+      case Constants.GATEWAY_OP_CODES.PRESENCE_UPDATE:
+        if (this.client.presense !== null) {
+          this.WSSend(Payloads.PRESENSE(this.client.presense));
         }
         break;
     }
