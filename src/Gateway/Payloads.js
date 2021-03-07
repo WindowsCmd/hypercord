@@ -43,6 +43,7 @@ module.exports.PRESENSE = (data) => {
         url: data.game.url || null,
       },
       status: data.status || "online",
+      client_status: data.client_status || "desktop",
       since: data.since || Date.now(),
       afk: !!data.afk,
     },

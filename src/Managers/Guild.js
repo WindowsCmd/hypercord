@@ -1,10 +1,6 @@
 const { CDN } = require("../Rest/endpoints");
 
 module.exports = class Guild {
-  /**
-   *
-   * @param {id of the guild} guild_id
-   */
   constructor(guild) {
     this.icon = guild.icon;
     this.name = guild.name;
@@ -23,6 +19,8 @@ module.exports = class Guild {
       throw new Error("options must be of type Object!");
     let format = options.format ? options.format : "webp";
 
-    return `${CDN}/icons/${this.id}/${this.icon}.${format}`;
+    return `${CDN}/icons/${this.id}/${this.icon}.${format}${
+      options?.size ? "?size=" + options.size : ""
+    }`;
   }
 };
