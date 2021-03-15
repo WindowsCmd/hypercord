@@ -20,7 +20,7 @@ client.on("guild_create", (g) => {
 })
 
 client.on("message", (m) => {
-  console.log(client.guilds.get(m.guild_id).channels.get(m.channel_id).send("uwu?"));
+  console.log(m);
 });
 
 client.login(config.token);

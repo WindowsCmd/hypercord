@@ -3,20 +3,21 @@ const Channel = require("./Channel");
 const Collection = require('../utils/Collection');
 
 module.exports = class Guild {
-  constructor(guild) {
+  constructor(guild, client) {
     this.unavailable = guild.unavailable ? guild.unavailable : false; 
     this.icon = guild.icon || null;
     this.name = guild.name || null;
     this.features = guild.features || null;
     this.id = guild.id || null;
     this.members = new Map();
-    this.channels = new Collection(Channel);
+    this.client = client;
+    this.channels = new Collection(Channel, this.client);
 
     //map all the channels
     if(guild.channels && guild.channels[0] && !this.unavailable){
-      guild.channels.map((channel) => {
-        this.channels.set(channel);
-      });
+      for(var channel of guild.channels){
+        this.channels.add(channel)
+      }
     }
   }
 

@@ -1,7 +1,9 @@
 module.exports = class Collection extends Map {
-  constructor(base) {
+  
+  constructor(base, client) {
     super();
     this.base = base;
+    this.client = client;
   }
 
 
@@ -42,9 +44,8 @@ module.exports = class Collection extends Map {
     }
 
     if(!(obj instanceof this.base)){
-      obj = new this.base(obj);
+      obj = new this.base(obj, this.client);
     }
-
     this.set(obj.id, obj);
     return this.get(obj.id);
   }
