@@ -17,11 +17,11 @@ client.on("ready", async () => {
 
 client.on("guild_create", (g) => {
 
-})
+});
 
 client.on("message", (m) => {
   if(m.author.bot == true) return;
-  m.reply("uwu");
+  m.reply(`Hello ${m.author.username} thank you for typing in ${m.guild.name}`);
 });
 
 client.login(config.token);
