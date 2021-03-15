@@ -121,6 +121,10 @@ module.exports = class Client extends EventEmitter {
     });
   }
 
+  /**
+   * Logges in the bot to the discord gateway 
+   * @param {Bot Token} token 
+   */
   login(token) {
     this.token = token;
     this.ws.login();
