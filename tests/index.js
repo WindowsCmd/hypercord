@@ -20,7 +20,8 @@ client.on("guild_create", (g) => {
 })
 
 client.on("message", (m) => {
-  console.log(m);
+  if(m.author.bot == true) return;
+  m.reply("uwu");
 });
 
 client.login(config.token);
