@@ -41,9 +41,11 @@ module.exports = class Collection extends Map {
       return exsistingObj;
     }
 
-    if(!obj instanceof this.base){
-      obj = new this.baseClass(obj);
+    if(!(obj instanceof this.base)){
+      obj = new this.base(obj);
     }
 
+    this.set(obj.id, obj);
+    return this.get(obj.id);
   }
 };

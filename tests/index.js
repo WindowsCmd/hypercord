@@ -4,11 +4,6 @@ let client = new Client();
 
 client.on("ready", async () => {
   console.log("ready!");
-  console.log(
-    client.guilds
-      .get("816845916576415805")
-      .iconURL({ format: "png", size: "512" })
-  );
 
   client.setPresence({
     status: "online",
@@ -19,6 +14,10 @@ client.on("ready", async () => {
     client_status: "mobile",
   });
 });
+
+client.on("guild_create", (g) => {
+  console.log(g);
+})
 
 client.on("message", (m) => {
   console.log(m);

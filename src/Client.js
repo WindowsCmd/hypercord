@@ -26,9 +26,9 @@ module.exports = class Client extends EventEmitter {
     this.intents = this.calcIntents(options.intents);
     this.ws.on("ready", async (u) => {
       this.user = u;
-      await this.fetchGuilds();
       this.emit("ready", this);
     });
+    this.ws.on("guild_create", (g) => this.emit("guild_create", g));
     this.ws.on("message", (m) => this.emit("message", m));
   }
 
