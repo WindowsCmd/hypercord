@@ -43,7 +43,7 @@ module.exports = class Websocket extends EventEmitter {
 
   handleClose(code, data) {
     if (this._ws !== null) {
-      this.emit("reconnect", this.client);
+      setTimeout(() => this.emit("reconnect", this.client), 1000);
       this.connect();
     }
   }
@@ -106,6 +106,9 @@ module.exports = class Websocket extends EventEmitter {
       case "MESSAGE_CREATE":
         this.emit("message", message.d);
         break;
+
+      case "GUILD_CREATE":
+        this.emit("guild_create", this.client.guilds.add(message.d));
     }
   }
 
