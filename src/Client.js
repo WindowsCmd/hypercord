@@ -7,6 +7,7 @@ const Collection = require('./utils/Collection');
 const Endpoints = require("./Rest/endpoints");
 const Payloads = require("./Gateway/Payloads");
 const FormData = require("form-data");
+const Message = require("./Structures/Message");
 const { EventEmitter } = require("events");
 
 module.exports = class Client extends EventEmitter {
@@ -29,7 +30,8 @@ module.exports = class Client extends EventEmitter {
       this.emit("ready", this);
     });
     this.ws.on("guild_create", (g) => this.emit("guild_create", g));
-    this.ws.on("message", (m) => this.emit("message", m));
+
+    this.ws.on("message", (m) => this.emit("message", new Message(m, this)));
   }
 
   /**
