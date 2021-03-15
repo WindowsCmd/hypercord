@@ -16,11 +16,11 @@ client.on("ready", async () => {
 });
 
 client.on("guild_create", (g) => {
-  console.log(g);
+
 })
 
 client.on("message", (m) => {
-  console.log(m);
+  console.log(client.guilds.get(m.guild_id).channels.get(m.channel_id).send("uwu?"));
 });
 
 client.login(config.token);
