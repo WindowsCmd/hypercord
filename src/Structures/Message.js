@@ -5,13 +5,12 @@ module.exports = class Message {
         this.id = message.id;
         this.client = client; 
         this.content = message.content;
-        //Later on we can fix this by creating a message collection on the channel or something like that?
-        this.guild = this.client.guilds.get(message.guild_id) || null;
+        //If there is a message refrence (reply) the guild id will not be in the message it will be in the message_refrence 
+        this.guild = this.client.guilds.get(message.guild_id || message?.message_reference?.guild_id) || null;
         this.channel = this.guild.channels.get(message.channel_id) || null;
         this.author = message.author;
         this.member = message.member;
         this.attachments = message.attachments;
-        this.bot = message.bot;
         this.embeds = message.embeds;  
     }
 
@@ -29,15 +28,14 @@ module.exports = class Message {
           }
         }
 
-        console.log(this.channel.id);
     
         this.client.rest.make({
           endpoint: CHANNEL_MESSAGES(this.channel.id), 
           method: "POST", 
           options: {data: JSON.stringify(req_data)}}).then((res) => {
-            console.log(res);
+            return new Message(res, this.client);
           }).catch((err) => {
-            console.log(err.response.data);
+            console.log(err);
           });
     }
 }

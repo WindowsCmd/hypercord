@@ -8,6 +8,7 @@ module.exports = class Channel {
     this.type = CHANNEL_TYPES[channel.type] || channel.type;
     this.name = channel.name;
     this.nsfw = channel.nsfw;
+    this.guild = client.guilds.get(channel.guild_id);
     this.client = client;
   }
 
@@ -24,7 +25,7 @@ module.exports = class Channel {
       endpoint: CHANNEL_MESSAGES(this.id), 
       method: "POST", 
       options: {data: JSON.stringify(req_data)}}).then((res) => {
-        console.log(res);
+        return new Message(res)
       }).catch((err) => {
         console.log(err);
       });
