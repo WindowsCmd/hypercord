@@ -1,4 +1,4 @@
-const { Client } = require("../src/index");
+const { Client, MessageEmbed } = require("../src/index");
 let config = require("./config.json");
 let client = new Client();
 
@@ -21,7 +21,12 @@ client.on("guild_create", (g) => {
 
 client.on("message", (m) => {
   if(m.author.bot == true) return;
-  m.reply(`Hello ${m.author.username} thank you for typing in ${m.guild.name}`);
+
+  let embed = new MessageEmbed()
+    .setTitle("Hello!")
+    .setDescription("uwu!");
+
+  m.channel.send(embed);
 });
 
 client.login(config.token);

@@ -1,5 +1,6 @@
 const { CHANNELS, CHANNEL_MESSAGES, CHANNEL } = require("../Rest/endpoints");
 const { CHANNEL_TYPES } = require('../Constants');
+const MessageEmbed = require('../utils/MessageEmbed');
 
 
 module.exports = class Channel {
@@ -13,13 +14,25 @@ module.exports = class Channel {
   }
 
   send(data, attachments = null){
-    if(data == "") throw new Error("Cannot send an empty message!");
+    if(data == "" && !data instanceof MessageEmbed) throw new Error("Cannot send an empty message!");
 
-    let req_data = {
-      content: data,
-      tts: false,
-      embed: []
+    let req_data = {};
+
+    if(data instanceof MessageEmbed) {
+      req_data = {
+        content: "",
+        tts: false,
+        embed: data.embed
+      };
+    } else {
+      req_data = {
+        content: data,
+        tts: false,
+        embed: []
+      };
     }
+
+    console.log(req_data);
 
     this.client.rest.make({
       endpoint: CHANNEL_MESSAGES(this.id), 
@@ -27,7 +40,7 @@ module.exports = class Channel {
       options: {data: JSON.stringify(req_data)}}).then((res) => {
         return new Message(res)
       }).catch((err) => {
-        console.log(err);
+       
       });
   }
 };

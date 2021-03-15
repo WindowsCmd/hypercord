@@ -84,7 +84,7 @@ module.exports = class Client extends EventEmitter {
   }
 
   /**
-   *
+   * Calculates the bots intents
    * @param Array Array of intents
    * @returns {Number} Calculation of indents provided if none, defaults to all.
    */
