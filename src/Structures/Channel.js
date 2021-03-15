@@ -7,4 +7,9 @@ module.exports = class Channel {
     this.name = channel.name;
     this.nsfw = channel.nsfw;
   }
+
+
+  send(data, attachments=null){
+    
+  }
 };

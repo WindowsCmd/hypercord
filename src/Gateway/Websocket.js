@@ -102,13 +102,28 @@ module.exports = class Websocket extends EventEmitter {
           this.is_ready = true;
           this._sessionId = message.d.session_id;
         }
+
+        /* Map the guilds */
+        if(message.d.guilds){
+          for(var guild_ of message.d.guilds){
+            this.client.guilds.add(guild_);
+          }
+        }
+
         break;
       case "MESSAGE_CREATE":
         this.emit("message", message.d);
         break;
 
       case "GUILD_CREATE":
-        this.emit("guild_create", this.client.guilds.add(message.d));
+        let guild = this.client.guilds.get(message.d.id);
+
+        //Preform this check so that we don't issue more than one guild_create for the same guild
+        if(!guild || guild.unavailable == true){
+          this.emit("guild_create", this.client.guilds.add(message.d, "", true));
+        } else {
+          this.client.guilds.add(message.d, "", true);
+        }
     }
   }
 
