@@ -1,6 +1,9 @@
 const { CHANNELS, CHANNEL_MESSAGES, CHANNEL } = require("../Rest/endpoints");
 const { CHANNEL_TYPES } = require('../Constants');
+const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('../utils/MessageEmbed');
+const FormData = require('form-data');
+const { from } = require("form-data");
 
 
 module.exports = class Channel {
@@ -13,34 +16,39 @@ module.exports = class Channel {
     this.client = client;
   }
 
-  send(data, attachments = null){
+  send(data, attachment = null){
     if(data == "" && !data instanceof MessageEmbed) throw new Error("Cannot send an empty message!");
+    
+    if(!attachment || !attachment instanceof MessageAttachment) attachment = null;
 
-    let req_data = {};
+    let req_data = new FormData();
 
     if(data instanceof MessageEmbed) {
-      req_data = {
-        content: "",
-        tts: false,
-        embed: data.embed
-      };
+      req_data.append("content", "");
+      req_data.append("payload_json", JSON.stringify({
+        embed: data.embed, 
+        content: "", 
+        tts: false
+      }));
+      if(attachment) req_data.append("file", attachment.buffer);
+      req_data.append("tts", false);
+
     } else {
-      req_data = {
-        content: data,
-        tts: false,
-        embed: []
-      };
+      req_data.append("content", data);
+      if(attachment) req_data.append("file", attachment.buffer);
+      req_data.append("tts", false);
     }
 
-    console.log(req_data);
+
 
     this.client.rest.make({
       endpoint: CHANNEL_MESSAGES(this.id), 
       method: "POST", 
-      options: {data: JSON.stringify(req_data)}}).then((res) => {
+      options: {data: req_data}, 
+      content_type: "multipart/form-data"}).then((res) => {
         return new Message(res)
       }).catch((err) => {
-       
-      });
+       console.log(err);
+      }); 
   }
 };
