@@ -2,9 +2,9 @@ const { CHANNELS, CHANNEL_MESSAGES, CHANNEL } = require("../Rest/endpoints");
 const { CHANNEL_TYPES } = require('../Constants');
 const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('../utils/MessageEmbed');
-const FormData = require('form-data');
-const { from } = require("form-data");
-
+const Message = require('./Message');
+const Form = require('../utils/FormData');
+var FormData = require('form-data');
 
 module.exports = class Channel {
   constructor(channel, client) {
@@ -24,31 +24,34 @@ module.exports = class Channel {
     let req_data = new FormData();
 
     if(data instanceof MessageEmbed) {
-      req_data.append("content", "");
-      req_data.append("payload_json", JSON.stringify({
+    
+      req_data.append("payload_json",JSON.stringify({
         embed: data.embed, 
         content: "", 
         tts: false
       }));
+      
       if(attachment) req_data.append("file", attachment.buffer);
-      req_data.append("tts", false);
+      req_data.append("tts", "false");
 
     } else {
       req_data.append("content", data);
       if(attachment) req_data.append("file", attachment.buffer);
-      req_data.append("tts", false);
+      req_data.append("tts", "false");
     }
 
 
-
-    this.client.rest.make({
+    this.client.rest.multipart_form_post({
       endpoint: CHANNEL_MESSAGES(this.id), 
-      method: "POST", 
-      options: {data: req_data}, 
-      content_type: "multipart/form-data"}).then((res) => {
-        return new Message(res)
-      }).catch((err) => {
-       console.log(err);
-      }); 
+      body: req_data,
+      headers: req_data.getHeaders()
+    }).then((res) => {
+      console.log(res);
+      res.guild_id = this.guild.id;
+      return new Message(res)
+    }).catch((err) => {
+     console.log(err);
+     console.log(req_data.extract())
+    }); 
   }
 };

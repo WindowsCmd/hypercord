@@ -8,18 +8,29 @@ module.exports = class Request {
 
   make({ endpoint, method, options, content_type }) {
     return new Promise((resolve, reject) => {
-      console.log(endpoint);
       axios({
         method,
         url: BASE + endpoint || null,
         headers: options?.headers || {
           "Content-Type": content_type ? content_type : "application/json",
-          Authorization: `Bot ${this.client.token}`,
+          Authorization: `Bot ${this.client.token}`
         },
         data: options.data
       })
         .then((res) => resolve(res.data))
         .catch(reject);
+    });
+  }
+
+
+  multipart_form_post({endpoint, body, headers, content}) {
+    return new Promise((resolve, reject) => {
+      axios.post(BASE + endpoint || null, body, {
+        headers: {
+          Authorization: `Bot ${this.client.token}`,
+          'content-type': `multipart/form-data; boundary=${body.getBoundary()}`
+        }
+      }).then((res) => resolve(res.data)).catch(reject);
     });
   }
 };
