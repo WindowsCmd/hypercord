@@ -3,20 +3,20 @@ const { CHANNEL_TYPES } = require('../Constants');
 const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('../utils/MessageEmbed');
 const Message = require('./Message');
-const Form = require('../utils/FormData');
 var FormData = require('form-data');
 
 module.exports = class Channel {
-  constructor(channel, client) {
+  constructor(channel, client, parent_id) {
     this.id = channel.id;
     this.type = CHANNEL_TYPES[channel.type] || channel.type;
     this.name = channel.name;
     this.nsfw = channel.nsfw;
-    this.guild = client.guilds.get(channel.guild_id);
+    this.guild = client.guilds.get(parent_id);
     this.client = client;
   }
 
   send(data, attachment = null){
+
     if(data == "" && !data instanceof MessageEmbed) throw new Error("Cannot send an empty message!");
     
     if(!attachment || !attachment instanceof MessageAttachment) attachment = null;
@@ -26,11 +26,11 @@ module.exports = class Channel {
     if(data instanceof MessageEmbed) {
     
       req_data.append("payload_json",JSON.stringify({
-        embed: data.embed, 
-        content: "", 
-        tts: false
+        embed: data.embed,
+        content: ""
       }));
-      
+
+
       if(attachment) req_data.append("file", attachment.buffer);
       req_data.append("tts", "false");
 
@@ -40,18 +40,17 @@ module.exports = class Channel {
       req_data.append("tts", "false");
     }
 
-
     this.client.rest.multipart_form_post({
       endpoint: CHANNEL_MESSAGES(this.id), 
       body: req_data,
       headers: req_data.getHeaders()
     }).then((res) => {
-      console.log(res);
       res.guild_id = this.guild.id;
-      return new Message(res)
+      return new Message(res, this.client)
     }).catch((err) => {
-     console.log(err);
-     console.log(req_data.extract())
+     console.log(err.response.data);
+     
     }); 
+    
   }
 };

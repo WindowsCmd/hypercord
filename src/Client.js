@@ -30,7 +30,6 @@ module.exports = class Client extends EventEmitter {
       this.emit("ready", this);
     });
     this.ws.on("guild_create", (g) => this.emit("guild_create", g));
-
     this.ws.on("message", (m) => this.emit("message", new Message(m, this)));
   }
 
@@ -91,7 +90,7 @@ module.exports = class Client extends EventEmitter {
   calcIntents(intents) {
     let final;
     if (!intents) {
-      return 32767;
+      return 513;
     } else {
       intents.forEach((intent) => {
         final = final * Constants.INTENTS[intent];

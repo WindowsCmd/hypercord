@@ -24,7 +24,10 @@ client.on("message", (m) => {
 
   let embed = new MessageEmbed()
     .setTitle("Hello!")
-    .setDescription("uwu!");
+    .setDescription("uwu!")
+    .addField("cum", "please cum inside of me daddy!", true)
+    .addField("uwu", "yummy", true)
+    .setColor("261913");
 
   m.channel.send(embed);
 });

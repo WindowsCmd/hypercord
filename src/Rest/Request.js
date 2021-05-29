@@ -27,8 +27,8 @@ module.exports = class Request {
     return new Promise((resolve, reject) => {
       axios.post(BASE + endpoint || null, body, {
         headers: {
-          Authorization: `Bot ${this.client.token}`,
-          'content-type': `multipart/form-data; boundary=${body.getBoundary()}`
+          ...headers,
+          Authorization: `Bot ${this.client.token}`
         }
       }).then((res) => resolve(res.data)).catch(reject);
     });

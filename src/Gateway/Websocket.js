@@ -94,7 +94,7 @@ module.exports = class Websocket extends EventEmitter {
         }
         break;
     }
-
+  
     switch (message.t) {
       case "READY":
         if (!this.is_ready) {

@@ -54,7 +54,7 @@ module.exports = class HyperEmbed {
         if(typeof inline !== "boolean") inline = false;
 
         let field = {
-            title: title,
+            name: title,
             value: value,
             inline: inline
         };

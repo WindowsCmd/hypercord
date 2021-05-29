@@ -11,7 +11,7 @@ module.exports = class Guild {
     this.id = guild.id || null;
     this.members = new Map();
     this.client = client;
-    this.channels = new Collection(Channel, this.client);
+    this.channels = new Collection(Channel, this.client, this.id);
 
     //map all the channels
     if(guild.channels && guild.channels[0] && !this.unavailable){
