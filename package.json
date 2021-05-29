@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Craftzman7/hypercord#readme",
   "dependencies": {
+    "@discordjs/opus": "^0.5.0",
     "axios": "^0.21.1",
     "form-data": "^4.0.0",
     "got": "^11.8.2",

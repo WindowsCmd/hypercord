@@ -1,19 +1,23 @@
 const { CHANNELS, CHANNEL_MESSAGES, CHANNEL } = require("../Rest/endpoints");
 const { CHANNEL_TYPES } = require('../Constants');
+const Base = require('./BaseChannel');
 const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('../utils/MessageEmbed');
 const Message = require('./Message');
 var FormData = require('form-data');
 
-module.exports = class Channel {
-  constructor(channel, client, parent_id) {
-    this.id = channel.id;
-    this.type = CHANNEL_TYPES[channel.type] || channel.type;
+module.exports = class Channel extends Base {
+  
+  constructor(channel, client) {
+    super(channel, client);
     this.name = channel.name;
     this.nsfw = channel.nsfw;
-    this.guild = client.guilds.get(parent_id);
-    this.client = client;
-  }
+    this.guild = client.guilds.get(channel.guild_id);
+
+    }
+
+
+
 
   send(data, attachment = null){
 

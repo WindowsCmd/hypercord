@@ -1,5 +1,5 @@
 const { CDN } = require("../Rest/endpoints");
-const Channel = require("./Channel");
+const Channel = require("./BaseChannel");
 const Collection = require('../utils/Collection');
 
 module.exports = class Guild {
@@ -16,7 +16,10 @@ module.exports = class Guild {
     //map all the channels
     if(guild.channels && guild.channels[0] && !this.unavailable){
       for(var channel of guild.channels){
-        this.channels.add(channel)
+        channel.guild_id = this.id;
+        const CorrectType = Channel.setType(channel, client);
+
+        this.channels.add(CorrectType);
       }
     }
   }
