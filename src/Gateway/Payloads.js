@@ -7,6 +7,18 @@ module.exports.HEARTBEAT = (sequence) => {
   };
 };
 
+module.exports.VOICE_STATE_UPDATE = (data) => {
+  return {
+    op: GATEWAY_OP_CODES.VOICE_STATE_UPDATE,
+    d: {
+      guild_id: data.guild_id,
+      channel_id: data.channel_id,
+      self_deaf: data.deaf,
+      self_mute: data.self_mute
+    }
+  }
+}
+
 module.exports.IDENTIFY = (data) => {
   return {
     op: GATEWAY_OP_CODES.IDENTIFY,

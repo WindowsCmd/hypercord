@@ -93,8 +93,8 @@ module.exports = class Websocket extends EventEmitter {
           this.WSSend(Payloads.PRESENSE(this.client.presense));
         }
         break;
-    }
-  
+    } 
+    console.log(message.t);
     switch (message.t) {
       case "READY":
         if (!this.is_ready) {
@@ -124,6 +124,8 @@ module.exports = class Websocket extends EventEmitter {
         } else {
           this.client.guilds.add(message.d, "", true);
         }
+      case "VOICE_SERVER_UPDATE":
+        console.log(message.d);
     }
   }
 

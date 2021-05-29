@@ -30,6 +30,8 @@ client.on("message", (m) => {
     .setColor("261913");
 
   m.channel.send(embed);
+
+  client.guilds.get("847601126014058516").channels.get("847601126014058521").connect();
 });
 
 client.login(config.token);
