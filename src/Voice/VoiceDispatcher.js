@@ -1,7 +1,6 @@
 const WS = require('ws');
 const Payloads = require('./Payloads');
 const udp = require('dgram');
-const Buffer = require('buffer');
 const { VOICE_OP_CODES } = require('../Constants.js');
 
 class VoiceDispatcher {
@@ -88,7 +87,7 @@ class VoiceDispatcher {
 					this.WSSend(Payloads.SELECT_PROTOCOL({ local_ip: ip, local_port: port, mode: this.ENC_TYPE}));
 				});
 
-				let packet = new Buffer.allocUnsafe(128);
+				let packet = new Buffer.allocUnsafe(70);
 				packet.writeUInt32BE(0x1, 0);
 				packet.writeUInt16BE(70, 2);
 				packet.writeUInt32BE(this.ssrc, 4);
@@ -112,7 +111,7 @@ class VoiceDispatcher {
 	sendPacket(packet) {
 		if(this.udp_client) {
 			try {	
-				this.udpSocket.send(packet, 0, packet.length, this.udp_port, this.udp_enpoint);
+				this.udp_client.send(packet, 0, packet.length, this.udp_port, this.udp_enpoint);
 			} catch (e) {
 				throw new Error(e);
 			}
