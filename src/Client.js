@@ -3,6 +3,7 @@ const Request = require("./Rest/Request");
 const Constants = require("./Constants");
 const GuildManager = require("./Structures/Guild");
 const Guild = require('./Structures/Guild');
+const VoiceManager = require('./Voice/VoiceManager');
 const Collection = require('./utils/Collection');
 const Endpoints = require("./Rest/endpoints");
 const Payloads = require("./Gateway/Payloads");
@@ -25,6 +26,8 @@ module.exports = class Client extends EventEmitter {
     this.guilds = new Collection(Guild, this);
     this.presense = null;
     this.intents = this.calcIntents(options.intents);
+    this.VoiceManager = new VoiceManager(this);
+
     this.ws.on("ready", async (u) => {
       this.user = u;
       this.emit("ready", this);

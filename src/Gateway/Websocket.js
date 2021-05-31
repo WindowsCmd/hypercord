@@ -125,7 +125,7 @@ module.exports = class Websocket extends EventEmitter {
           this.client.guilds.add(message.d, "", true);
         }
       case "VOICE_SERVER_UPDATE":
-        console.log(message.d);
+        this.client.VoiceManager.Connect(message.d.guild_id, message.d.token, message.d.endpoint);
     }
   }
 
