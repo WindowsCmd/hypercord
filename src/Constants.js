@@ -1,6 +1,6 @@
 "use-strict";
 
-module.exports.GATEWAY_VERSION = 8;
+module.exports.GATEWAY_VERSION = 9;
 module.exports.API_VERSION = 6;
 
 module.exports.ENDPOINTS = {

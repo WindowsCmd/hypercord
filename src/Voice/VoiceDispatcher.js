@@ -1,6 +1,8 @@
 const WS = require('ws');
 const Payloads = require('./Payloads');
 const udp = require('dgram');
+const { OpusEncoder } = require('@discordjs/opus');
+const Sodium = require('sodium-native');
 const { VOICE_OP_CODES } = require('../Constants.js');
 
 class VoiceDispatcher {
@@ -10,16 +12,25 @@ class VoiceDispatcher {
 		this.guild = client.guilds.get(guild_id);
 		this.endpoint = endpoint;
 		this.token = token;
+		this.channel_size = 2;
+		this.sample_rate = 48000;
 
 		this.heartbeat = null;
 		this.ws = null;
 
 		this.ENC_TYPE = "xsalsa20_poly1305";
 		this.modes = null;
+		this.mode = null;
+		this.secret = null;
+		this.ready = false;
 		this.udp_endpoint = null;
 		this.udp_port = null;
 		this.udp_client;
+		this.sequence = 0;
+		this.timestamp = 0;
 		this.nonce = Buffer.alloc(24);
+		this.opus_encoder = new OpusEncoder(this.sample_rate, this.channel_size);
+		this.encoded_bytes = null;
 	}
 
 
@@ -82,7 +93,7 @@ class VoiceDispatcher {
 					const ip = p.toString("ascii", 8, i);
 					const port = p.readUInt16BE(packet.length - 2);
 
-					console.log(ip + port);
+					console.log("Obtained loacl IP for voice server:  " + ip + ":" + port);
 
 					this.WSSend(Payloads.SELECT_PROTOCOL({ local_ip: ip, local_port: port, mode: this.ENC_TYPE}));
 				});
@@ -97,7 +108,11 @@ class VoiceDispatcher {
 
 
 			case VOICE_OP_CODES.SESSION_DESCRIPTION:
-				console.log(d);
+				this.mode = d.d.mode;
+				this.secret = Buffer.form(d.d.secret_key);
+				this.ready = true;
+
+				break;
 
 
 		}
@@ -105,6 +120,19 @@ class VoiceDispatcher {
 
 	handleWebsocketError(e) {
 		console.log(e);
+	}
+
+	play(source) {
+		if(!this.ready) {
+			throw new Error("Not connected to the voice server!");
+		}
+	}
+
+	sendAudio(audio) {
+
+        if(++this.sequence >= 65536) {
+            this.sequence -= 65536;
+        }
 	}
 
 

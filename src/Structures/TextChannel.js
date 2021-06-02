@@ -19,30 +19,42 @@ module.exports = class Channel extends Base {
 
 
 
-  send(data, attachment = null){
+  send(data, ...extras){
 
     if(data == "" && !data instanceof MessageEmbed) throw new Error("Cannot send an empty message!");
-    
-    if(!attachment || !attachment instanceof MessageAttachment) attachment = null;
 
     let req_data = new FormData();
 
+    let request_json = {
+      embed: null,
+      content: ""
+    };
+
     if(data instanceof MessageEmbed) {
-    
-      req_data.append("payload_json",JSON.stringify({
-        embed: data.embed,
-        content: ""
-      }));
 
-
-      if(attachment) req_data.append("file", attachment.buffer);
+      request_json.embed = data.embed;
       req_data.append("tts", "false");
 
     } else {
       req_data.append("content", data);
-      if(attachment) req_data.append("file", attachment.buffer);
       req_data.append("tts", "false");
     }
+
+
+    for(var i in extras){
+      if(typeof extras == "string") return;
+
+      if(extras instanceof MessageAttachment) {
+
+      } else if (extras instanceof MessageEmbed) {
+        if(request_json.embed !== null) throw new Error("A message can only contain 1 message embed!");
+
+        request_json.embed = i.embed;
+      }
+
+    }
+
+    req_data.append("payload_json",JSON.stringify(request_json));
 
     this.client.rest.multipart_form_post({
       endpoint: CHANNEL_MESSAGES(this.id), 
