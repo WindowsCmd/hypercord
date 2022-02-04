@@ -13,14 +13,9 @@ module.exports = class Channel extends Base {
     this.name = channel.name;
     this.nsfw = channel.nsfw;
     this.guild = client.guilds.get(channel.guild_id);
-
-    }
-
-
-
+  }
 
   send(data, ...extras){
-
     if(data == "" && !data instanceof MessageEmbed) throw new Error("Cannot send an empty message!");
 
     let req_data = new FormData();
@@ -40,7 +35,7 @@ module.exports = class Channel extends Base {
       req_data.append("tts", "false");
     }
 
-
+    /* Determine the extra arguments passed into the function */
     for(var i in extras){
       if(typeof extras == "string") return;
 
