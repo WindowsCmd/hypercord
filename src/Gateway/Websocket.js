@@ -36,7 +36,7 @@ module.exports = class Websocket extends EventEmitter {
 
     this._ws.once("close", this.handleClose.bind(this));
     this._ws.on("error", (m) => {
-      console.log(m);
+      console.log(`Websocket error: ` + m);
     });
     this._ws.on("message", this.handleMessage.bind(this));
   }

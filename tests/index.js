@@ -27,8 +27,7 @@ client.on("message", (m) => {
     .setDescription("uwu!")
     .setColor("261913");
 
-  m.channel.send(embed);
-
+  m.channel.send({ embeds: [embed] });
 });
 
 client.login(config.token);
